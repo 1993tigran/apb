@@ -1,0 +1,473 @@
+/ Safari /
+@-webkit-keyframes spin {
+	0% {
+		-webkit-transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+	}
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.loader {
+	margin: 0 auto;
+	margin-top: 20%;
+	border: 16px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 16px solid #f20a53;
+	width: 120px;
+	height: 120px;
+	-webkit-animation: spin 2s linear infinite; /* Safari */
+	animation: spin 2s linear infinite;
+}
+.project-image-view{
+	width: 100%;
+	height: 200px;
+}
+.project-image-item{
+	padding: 10px;
+}
+body {
+	background:transparent;
+	font-family: 'Roboto', sans-serif;
+}
+
+	.container.body {
+		min-height: 100vh;
+	}
+	
+		.main_container {
+			display: flex;
+			min-height: calc(100vh - 19px);
+		}
+		
+			.main_container .left_col {
+				position:static !important;
+			}
+		
+			.main_container .right_col {
+				margin-left: 0 !important;
+				width: 100%;
+			}
+
+	footer {
+		padding: 0;
+		padding-right: 5px;
+		margin-left: 0;
+		overflow: hidden;
+		background:#F7F7F7;
+		border-left:230px #74d0db solid;
+	}
+
+input,
+button {
+	outline:none !important;
+}
+
+/* "Login" and "Password Forget" pages - start*/
+.login-page {
+	background:url("../images/login-page-bg.jpg");
+	background-size: cover;
+	background-position: center;
+}
+.login-page:before {
+	content:"";
+	position:fixed;
+	z-index:-1;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	background:rgba(116, 209, 219, .4);
+}
+
+	.login-page .container {
+		max-width:1318px;
+		width:100%;
+		padding-top: 25px;
+		padding-bottom: 25px;
+		display: flex;
+		flex-direction: column;
+		height: inherit;
+	}
+	
+		.login-page .container > .row {
+			margin: auto;
+		}
+	
+			.logo a {
+				display:block;
+				margin-bottom:20px;
+				width:157px;
+				height:87px;
+				background:url("../images/aplusbe-logo.png");
+			}
+			
+			.login-page .static-page,.site-reset-password,
+			.login-page .site-request-password-reset {
+				width:710px;
+				display: flex;
+				flex-direction: column;
+				border:1px #fff solid;
+				justify-content: center;
+				font-size: 15px;
+				align-items: center;
+				color: #fff;
+			}
+
+				.login-page .row .row {
+					width: 50%;
+				}
+				
+					.login-page .row h1 {
+						font-size: 50px;
+						font-weight: 700;
+					}
+
+					.login-page .row div[class *= "col-lg-"] {
+						width: auto;
+						float: none;
+						padding: 0;
+					}
+					
+						.login-page .row label {
+							font-weight: normal;
+							cursor: pointer;
+						}
+					
+						.login-page .row input.form-control {
+							border: 1px #fff solid;
+							background: transparent;
+							border-radius: 0;
+							font-weight:300;
+							color: #fff;
+						}
+					
+						.login-page .static-page input[type="checkbox"] {
+							vertical-align: text-bottom;
+						}
+						
+					.login-page .static-page .field-loginform-rememberme {
+						float: left;
+					}
+
+					.login-page .static-page .field-loginform-rememberme ~ div {
+						float: right;
+						margin-top: 0 !important;
+					}
+
+						.login-page .static-page .field-loginform-rememberme ~ div a {
+							color:#74d1db;
+							text-decoration:underline;
+						}
+
+						.login-page .static-page .field-loginform-rememberme ~ div a:hover {
+							text-decoration:none;
+						}
+						
+					.login-page .row .required {
+						margin-bottom: 0;
+					}
+					
+						.login-page .row .required.has-error label,
+						.login-page .row .required.has-error .help-block {
+							display: inline-block;
+							padding-left: 5px;
+							padding-right: 5px;
+							background: #f20a53;
+							color: #fff;
+						}
+						
+						.login-page .row .required.has-error .help-block {
+							font-size: 11px;
+						}
+						
+					.login-page .site-request-password-reset .required ~ .form-group,
+					.login-page .static-page .field-loginform-rememberme ~ .form-group {
+						clear: both;
+						float: none;
+						text-align: center;
+					}
+					
+						.login-page .btn {
+							font-size:18px;
+						}
+					
+						.btn {
+							background: #f20a53;
+							border-color: transparent;
+							border-radius: 0;
+							text-transform: uppercase;
+							display: inline-block !important;
+							margin: 0 !important;
+							color:#fff;
+						}
+						.btn:hover {
+							background: #07818e !important;
+							color:#fff;
+						}
+						
+@media screen and (max-width:800px) {
+	.login-page .container > .row {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	
+		.login-page .static-page,
+		.login-page .site-request-password-reset {
+			width:100%;
+			text-align:center;
+		}
+		
+			.login-page .row .row {
+				width: 95%;
+			}
+}
+/* "Login" and "Password Forget" pages - end*/
+
+/* left hand panel - start*/
+.main_container .left_col {
+	background: #74d0db;
+}
+
+	.left_col .nav_title {
+		float:none;
+		height:auto;
+		background: transparent;
+	}
+
+		.left_col .logo {
+			display: block;
+			margin:20px 16px;
+		}
+		
+		.left_col .nav li.current-page,
+		.left_col .nav.side-menu > li.active {
+			background:#07818e !important;
+			border-right: 0;
+			border-left: 4px #f40a51 solid;
+		}
+		
+		
+		.left_col .btn {
+			margin-top: 30px !important;
+			color: #fff;
+		}
+/* left hand panel - end*/
+		
+/* main content area - start*/
+.main_container .right_col {
+	min-height:auto !important;
+	color: #000;
+}
+	
+	.main_container .right_col h1 {
+		font-size: 30px;
+		font-weight: 700;
+	}
+	
+	.main_container .right_col .grid-view .summary {
+		font-size: 18px;
+		font-weight: 300;
+	}
+	
+	.main_container .right_col .grid-view table.table-striped {
+		margin-top:4px;
+	}
+	
+	.main_container .right_col .grid-view table.table-striped,
+	.main_container .right_col .grid-view table.table-striped th a {
+		color: #000;
+	}
+	
+		.table-striped > tbody > tr:nth-of-type(odd) {
+			background-color: #efeff1;
+		}
+		
+		.table-striped > tbody > tr:hover td {
+			background-color: #ddd;
+			color: #f00;
+		}
+	
+			.main_container .right_col table th,
+			.main_container .right_col table th a {
+				font-size: 20px;
+				font-weight: 300;
+			}
+	
+			.main_container .right_col table td {
+				font-size: 15px;
+				font-weight: 400;
+				vertical-align: middle;
+			}
+			
+			.main_container .right_col .grid-view table td:last-child {
+				text-align:center;
+			}
+			
+				.main_container .right_col .grid-view table td:last-child .glyphicon {
+					margin-left:3px;
+					margin-right:3px;
+					color: #bbb;
+				}
+				
+				.main_container .right_col .grid-view table tr:hover .glyphicon,
+				.main_container .right_col .grid-view table td:last-child .glyphicon:hover {
+					color: #000;
+				}
+	
+		.main_container .right_col div[class *= "backgrounds-"] img {
+			object-fit: cover;
+		}
+		
+	.projects-create #form-project > .row {
+		display: flex;
+	}
+	
+		.projects-create .project-form {
+			margin-right:2px;
+			padding-right:18px;
+			border-right:1px #e8e9eb solid;
+		}
+			
+			.projects-create .project-form .images-box .row {
+				display: flex;
+				margin-left: 0;
+				margin-right: 0;
+			}
+			
+				.projects-create .project-form .images-box .row div[class *= "col-md-"] {
+					height:142px;
+					border:1px #ddd dashed;
+					margin-right: 17px;
+					margin-bottom: 22px;
+					background:url("../images/add-project-bgimg-icon.png");
+					background-repeat: no-repeat;
+					background-position: center;
+					padding:0;
+					position:relative;
+					overflow:hidden;
+				}
+				
+				.projects-create .project-form .images-box .row div[class *= "col-md-"]:nth-child(3n + 3) {
+					margin-right: 0;
+				}
+			
+					.projects-create .project-form .images-box .row label {
+						margin-left: 5px;
+						font-size:18px;
+						font-weight:300;
+					}
+					
+					.projects-create .project-form .images-box .row input[type="file"] {
+						width: 100%;
+						padding-top: 30%;
+						padding-bottom: 25%;
+						opacity: 0;
+						position: relative;
+						z-index: 1;
+					}
+					
+					.projects-create .project-form .images-box .row  input[type="file"] ~ div[id] {
+						position: absolute;
+						top: 0;
+						left:0;
+						right:0;
+					}
+					
+						.projects-create .project-form .images-box .row  input[type="file"] ~ div[id] img {
+							border: 0;
+							padding: 0;
+							height: 142px;
+							object-fit: cover;
+							border-radius: 0;
+							background-color: #eee;
+						}
+						
+						.projects-create .project-form .images-box .cropper-container {
+							height: 142px !important;
+							z-index: 2;
+						}
+						
+							.projects-create .project-form .images-box .cropper-container .cropper-canvas {
+								top: -83px;
+								left: -3px;
+								height: 142px !important;
+							}
+							
+								.projects-create .project-form .images-box .cropper-container .cropper-canvas img {
+									height: inherit !important;
+								}
+							
+							.projects-create .project-form .images-box .cropper-container .cropper-crop-box {
+								top: -83px;
+								left: -3px;
+							}
+					
+					.projects-create .project-form .images-box .crop-button {
+						position: relative;
+						top: -48%;
+						z-index:2;
+					}
+	
+		.projects-create .project-view .nav_menu {
+			background: transparent;
+			border-bottom: 0;
+			display: flex;
+			justify-content: space-between;
+			padding-left: 20px;
+			padding-right: 10px;
+		}
+	
+			.projects-create .project-view .nav_menu span {
+				font-size:25px;
+				font-weight: 300;
+			}
+	
+	.edit-image-content {
+		padding: 10px;
+		position: relative;
+	}
+
+	.edit-image-content > span.fa-trash {
+		font-size: 20px!important;
+		position: absolute!important;
+		top: 21px;
+		right: 21px;
+		color: #d10808;
+		cursor: pointer;
+	}
+	
+	.backgrounds-form .fileinput-cancel-button,
+	.backgrounds-form .file-preview .glyphicon-plus-sign {
+		display:none !important;
+	}
+	
+	.go_back {
+		position: absolute;
+		top: 23px;
+		left: 50px;
+		font-size: 20px;
+		color: black;
+		font-weight: 600;
+	}
+/* main content area - end*/
+
+
+@media screen and (max-width:991px) {			
+	.main_container .right_col div[class *= "backgrounds-"] div[class *= "col-md-"] {
+		width:100%;
+	}
+	
+	footer {
+		border-left: 0;
+	}
+}

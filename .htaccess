@@ -1,0 +1,20 @@
+
+<ifmodule mod_rewrite.c>
+
+RewriteEngine On
+RewriteCond %{THE_REQUEST} ntunnel_mysql.php
+RewriteRule (.*) $1 [L]
+#RewriteCond %{REQUEST_URI} !/ntunnel_mysql.php
+#RewriteCond %{REQUEST_URI} ^/.*
+RewriteRule ^(.*)$ web/$1 [L]
+
+RewriteCond %{REQUEST_URI} !^/web/
+RewriteCond %{REQUEST_FILENAME} !-f [OR]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^.*$ web/index.php
+</ifmodule>
+# Use PHPedge as default
+AddHandler application/x-httpd-php-edge .php
+<IfModule mod_suphp.c>
+    suPHP_ConfigPath /opt/phpedge/lib
+</IfModule>
