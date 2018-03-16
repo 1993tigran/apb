@@ -79,9 +79,16 @@ $config = [
 
                 'projects-edit/<id:\d+>' => '/projects/edit',
                 'project-images-size-list/<id:\d+>' => '/projects/project-images-size-list',
+                'queue-list' => '/projects/queue-list',
+                'generate-queue-projects/<id:\d+>' => '/projects/generate-queue-projects',
+                'generate-queue-projects' => '/projects/generate-queue-projects',
                 'project-images-list/<project_id:\d+>/<size_id:\d+>' => '/projects/project-images-list',
                 'projects-update/<id:\d+>' => '/projects/update',
                 'projects-delete/<id:\d+>' => '/projects/delete',
+                'delete-project-image-ajax' => '/projects/project-images-list',
+
+
+                'zipping/<id:\d+>' => '/projects/zipping',
 
                 'backgrounds' => '/backgrounds/index',
                 'project-image-generate/<id:\d+>' => '/projects/project-image-generate',
@@ -89,9 +96,7 @@ $config = [
                 'get-backgrounds-ajax' => '/backgrounds/get-backgrounds-ajax',
                 'delete-background-image-ajax' => '/backgrounds/delete-background-image-ajax',
                 'save-images-ajax' => '/projects/save-images-ajax',
-                'generate-image-size-ajax' => '/projects/generate-image-size-ajax',
 
-                '<controller>/<action>' => '<controller>/<action>',
             ],
         ],
     ],

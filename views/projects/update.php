@@ -15,9 +15,7 @@ $this->params['breadcrumbs'][] = 'Update';
     <?= $this->render('_form', [
         'model' => $model,
         'background_categories' => $background_categories,
-        'images_size' => $images_size,
         'selected_project_back' => $selected_project_back,
-        'selected_images_size' => $selected_images_size,
         'select_images' => $select_images,
     ]) ?>
 

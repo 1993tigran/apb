@@ -12,31 +12,34 @@ $this->registerJsFile('@web/js/threejs/customThreeJs.js', ['position' => \yii\we
 $this->title = 'Project Image Generate';
 
 ?>
-<?php ?>
 
 <div id="project-view">
-    <a class="go_back" data-confirm="Are you sure you want to cancel this process?" href="/projects-edit/<?= $id; ?>">
-        < Go back - Images:(<span class="time-round-generate">0</span>/<span class="saved-images-count">0</span>)
-    </a>
+    <?php if (!empty($projects_Ides)):?>
+        <a class="go_back"  href="/queue-list">
+            < Go back - Projects:(<span class="count-project-to-generate">0</span>/<span class="count-generate-project">0</span>)  Images:(<span class="time-round-generate">0</span>/<span class="saved-images-count">0</span>)
+        </a>
+    <?php else:?>
+        <a class="go_back" data-confirm="Are you sure you want to cancel this process?" href="/projects-edit/<?= $id; ?>">
+            < Go back - Images:(<span class="time-round-generate">0</span>/<span class="saved-images-count">0</span>)
+        </a>
+    <?php endif;?>
     <div id="container" class="loader"></div>
-    <div class="containers">
-        <?php foreach ($projects_images_size as $key => $project_image_size): ?>
-            <div id="container_<?= $key; ?>" data-name="renderer_<?= $key; ?>" data-width="<?= $project_image_size['width'];  ?>"
-                 data-height="<?= $project_image_size['height']; ?>" style="display: none"></div>
-        <?php endforeach;; ?>
-    </div>
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
-        var projectId = <?=$id;?>;
-//       var imagesSizeMax = {
-//           'maxImageWidth':<?//=$projectsImagesSizeMax['width']?>//,
-//           'maxImageHeight':<?//=$projectsImagesSizeMax['height']?>
-//        }
-//        getGenerateImageSize(projectId);
-//        $(window).bind("load", function() {
-            projectImageGenerate()
-//        });
+
+        var projectsIdes = <?=$projects_Ides?>;
+
+        if(projectsIdes){
+            generateQueueProjects(projectsIdes);
+        }else {
+            projectImageGenerate();
+        }
+
+
+        $(".go_back").click(function () {
+            window.requestAbort = true;
+        })
     })
 
 </script>

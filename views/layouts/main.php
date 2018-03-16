@@ -49,6 +49,7 @@ $bundle = yiister\gentelella\assets\Asset::register($this);
                                 "items" => [
                                     ["label" => "PROJECTS", "url" => "/projects", "icon" => "cubes"],
                                     ["label" => "BACKGROUNDS", "url" => ["/backgrounds"], "icon" => "image"],
+                                    ["label" => "QUEUE LIST", "url" => ["/queue-list"], "icon" => "list"],
                                     ["label" => "SETTINGS", "url" => ["/#"], "icon" => "cogs"],
                                     ["label" => "LOGOUT", "url" => ["/logout"], "icon" => "sign-out"],
 //                                    ["label" => "+ NEW PROJECT", "url" => ["/projects/create"], 'template' => '<a class="btn" href="{url}" >{label}</a>'],

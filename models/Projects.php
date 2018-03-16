@@ -26,6 +26,7 @@ use Yii;
  * @property int $light_z
  * @property int $light_intensity
  * @property int $environ_light_intensity
+ * @property int $queue
  * @property string $created_at
  *
  * @property ProjectsBackgrounds[] $projectsBackgrounds
@@ -33,7 +34,6 @@ use Yii;
 class Projects extends \yii\db\ActiveRecord
 {
 
-    public $images_size;
     public $background_ides;
     /**
      * @inheritdoc
@@ -49,10 +49,10 @@ class Projects extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['images_size', 'background_ides'], 'required'],
+            [['background_ides'], 'required'],
             [['light_x', 'light_y','light_z','light_intensity','environ_light_intensity'], 'required'],
             [['title', 'front_img', 'back_img', 'top_img', 'bottom_img', 'left_img', 'right_img','box_width', 'box_height', 'box_depth', 'vertical_rot', 'horizontal_rot', 'zomm_min', 'zom_max'], 'required'],
-            [['box_width', 'box_height', 'box_depth', 'vertical_rot', 'horizontal_rot', 'zomm_min', 'zom_max'], 'integer'],
+            [['box_width', 'box_height', 'box_depth', 'vertical_rot', 'horizontal_rot', 'zomm_min', 'zom_max', 'queue'], 'integer'],
             [['created_at'], 'safe'],
             [['title', 'front_img', 'back_img', 'top_img', 'bottom_img', 'left_img', 'right_img'], 'string', 'max' => 255],
         ];
@@ -81,12 +81,12 @@ class Projects extends \yii\db\ActiveRecord
             'zom_max' => 'Zoom Max',
             'created_at' => 'Created At',
             'background_ides' => 'Background categories',
-            'images_size' => 'Images size',
             'light_x' => 'Light x',
             'light_y' => 'Light y',
             'light_z' => 'Light z',
             'light_intensity' => 'Light Intensity',
             'environ_light_intensity' => 'Environ Light Intensity',
+            'queue' => 'Queue',
         ];
     }
 

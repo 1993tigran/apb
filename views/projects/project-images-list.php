@@ -10,13 +10,28 @@
 $this->title = 'Project Images List';
 ?>
 <?php ?>
-<h1><?= \yii\helpers\Html::encode($this->title) ?></h1>
+<div class="row">
+<div class="col-md-6">
+    <h1><?= \yii\helpers\Html::encode($this->title) ?></h1>
+</div>
+<div align="right" class="col-md-6">
+    <a  class="btn" href="/zipping/<?=$project_id?>".>Download zip</a>
+</div>
+</div>
+
+<div class="row">
 <div id="project-images-list">
     <?php foreach ($project_images as $project_image): ?>
-        <dic class="col-md-4 project-image-item">
+        <dic class="col-md-3 project-image-item edit-image-content">
             <img class="project-image-view"
-                 src="/uploads/images/<?= $project_id . '/' . $images_size->width . '_' . $images_size->height . '/' . $project_image->name ?>"
+                 src="/uploads/images/<?= $project_id . '/' . $backgrounds_size->width . '_' . $backgrounds_size->height . '/' . $project_image->name ?>"
                  alt="">
+            <span class="fa fa-trash" onclick="deleteProjectImageAjax(this)" data-project-id="<?=$project_id;?>" data-id="<?=$project_image->id;?>" data-size-width="<?=$backgrounds_size->width;?>" data-size-height="<?=$backgrounds_size->height;?>"  aria-hidden="true"></span>
         </dic>
     <?php endforeach; ?>
+
+</div>
+</div>
+<div class="row pagination-content" align="center">
+    <?=\yii\widgets\LinkPager::widget(['pagination' => $pages]);?>
 </div>

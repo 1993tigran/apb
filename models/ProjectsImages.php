@@ -71,7 +71,7 @@ class ProjectsImages extends \yii\db\ActiveRecord
 
     public static function getProjectsImagesByIdes($project_id, $size_id)
     {
-        return self::find()->where(['project_id' => $project_id])->andWhere(['images_size_id' => $size_id])->all();
+        return self::find()->where(['project_id' => $project_id])->andWhere(['images_size_id' => $size_id]);
     }
 
 }

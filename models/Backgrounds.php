@@ -10,6 +10,8 @@ use Yii;
  * @property int $id
  * @property string $title
  * @property string $created_at
+ * @property int $width
+ * @property int $height
  *
  * @property BackgroundImages[] $backgroundImages
  * @property ProjectsBackgrounds[] $projectsBackgrounds
@@ -30,7 +32,8 @@ class Backgrounds extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title'], 'required'],
+            [['title','width','height'], 'required'],
+            [['width','height'], 'integer'],
             [['created_at'], 'safe'],
             [['title'], 'string', 'max' => 255],
         ];
@@ -45,6 +48,8 @@ class Backgrounds extends \yii\db\ActiveRecord
             'id' => 'ID',
             'title' => 'Title',
             'created_at' => 'Created At',
+            'width' => 'Width',
+            'height' => 'Height',
         ];
     }
 

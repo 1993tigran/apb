@@ -30,7 +30,23 @@
 }
 .project-image-view{
 	width: 100%;
-	height: 200px;
+}
+.file {
+	position: relative;
+	overflow: hidden;
+}
+.add-to-queue{
+	background: #02727e!important;
+}
+.generate{
+	background: #9d0535!important;
+}
+#backImgId {
+	position: absolute;
+	font-size: 50px;
+	opacity: 0;
+	right: 0;
+	top: 0;
 }
 .project-image-item{
 	padding: 10px;

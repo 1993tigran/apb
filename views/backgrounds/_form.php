@@ -7,6 +7,8 @@ use kartik\file\FileInput;
 /* @var $this yii\web\View */
 /* @var $model app\models\Backgrounds */
 /* @var $form yii\widgets\ActiveForm */
+$this->registerCssFile('@web/css/cropper.css',['position' => \yii\web\View::POS_HEAD]);
+$this->registerJsFile('@web/js/cropper.js',['position' => \yii\web\View::POS_HEAD]);
 ?>
 
 <div class="backgrounds-form">
@@ -14,17 +16,19 @@ use kartik\file\FileInput;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'width')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'height')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model_background_images, 'image[]')->widget(FileInput::classname(), [
-        'options' => [
-            'multiple' => true,
-            'accept' => 'uploads/background-image*'
-        ],
-        'pluginOptions' => [
-            'showUpload' => false
-        ],
-
-    ])->label('Background image'); ?>
+    <div class="col-md-12">
+        <label for="Front Img">Background image</label>
+        <div class="file btn btn-lg btn-primary">
+            Upload
+            <input disabled="disabled" id="backImgId" type='file' data-width="" data-height="" data-name="back-img" data-id="back-img" multiple  onchange="readBackgroundURL(this);" />
+        </div>
+        <br>
+        <div  id="content"></div>
+        <br>
+    </div>
 
     <div class="col-md-12">
     <?php if (!empty($background_images)):?>
@@ -38,6 +42,7 @@ use kartik\file\FileInput;
     </div>
     <br>
     <div class="form-group">
+        <br>
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 

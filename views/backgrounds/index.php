@@ -25,6 +25,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
 
             'title',
+            'width',
+            'height',
             [
                 'header' => 'Created at',
                 'format' => 'html',

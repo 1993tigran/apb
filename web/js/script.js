@@ -36,13 +36,14 @@ $(document).ready(function () {
 
     $(".generate-btn").attr('disabled','disabled');
     $(".preview").on('click', function () {
+        $("#container").html(' ');
+        $("#container").css('background', 'transparent');
+        $("#container").addClass('loader');
         $("#form-project input,textarea,select").blur();
         setTimeout(function () {
-            $("#container").html('');
             if ($("#form-project").find('.has-error').length <= 0 ){
                 var backgroundIdes = $("#select-back").val();
-                var imagesSizeIdes = $("#images-size").val();
-                if (backgroundIdes && imagesSizeIdes) {
+                if (backgroundIdes) {
                     getBackgrounds(backgroundIdes);
                 }
             }
@@ -53,11 +54,20 @@ $(document).ready(function () {
         if ($("#form-project").find('.has-error').length <= 0 ){
             $(".generate-btn").attr('disabled','disabled');
         }
+    });
+
+    $("#backgrounds-width").change(function () {
+        checkBackgroundSize();
+    });
+    $("#backgrounds-height").change(function () {
+        checkBackgroundSize();
+    });
+
+    $(".go_back").on('click',function () {
+        $("#container").html(' ');
+        $("#container").css('background', 'transparent')
+        $("#container").addClass('loader');
     })
-
-
-
-
 
     // $(".images-box-content").hide();
 })

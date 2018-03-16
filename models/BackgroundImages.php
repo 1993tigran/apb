@@ -31,8 +31,7 @@ class BackgroundImages extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-//            [['image'], 'required','on' => 'update'],
-            ['image', 'file', 'skipOnEmpty' => true],
+            [['image'], 'file', 'skipOnEmpty' => true, 'maxFiles'=>0],
             [['background_id'], 'integer'],
             [['created_at'], 'safe'],
             [['image'], 'string', 'max' => 255],

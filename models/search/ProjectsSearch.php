@@ -39,7 +39,7 @@ class ProjectsSearch extends Projects
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params,$queue)
     {
         $query = Projects::find();
 
@@ -67,6 +67,7 @@ class ProjectsSearch extends Projects
             'horizontal_rot' => $this->horizontal_rot,
             'zomm_min' => $this->zomm_min,
             'zom_max' => $this->zom_max,
+            'queue' => $queue,
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])

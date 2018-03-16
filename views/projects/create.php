@@ -14,7 +14,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= $this->render('_form', [
         'model' => $model,
         'background_categories' => $background_categories,
-        'images_size' => $images_size,
     ]) ?>
 
 </div>

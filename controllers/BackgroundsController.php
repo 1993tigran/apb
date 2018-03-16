@@ -15,8 +15,9 @@ use yii\filters\VerbFilter;
 /**
  * BackgroundsController implements the CRUD actions for Backgrounds model.
  */
-class BackgroundsController extends Controller
+class BackgroundsController extends CommonController
 {
+
     /**
      * @inheritdoc
      */
@@ -80,29 +81,19 @@ class BackgroundsController extends Controller
     {
         $model = new Backgrounds();
         $model_background_images = new BackgroundImages();
-        if ($model->load(Yii::$app->request->post()) &&  $model_background_images->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
 
-            $upload_image = \yii\web\UploadedFile::getInstances($model_background_images, 'image');
-
-            if (!empty($upload_image)) {
-                foreach ($upload_image as $image) {
-
+            $background_images = Yii::$app->request->post('BackgroundImages')['image'];
+            foreach ($background_images as $image) {
+                $fileName = md5(microtime()) . '.jpg';
+                if ($this->changeImageSize($image, $fileName,self::BACKGROUND_IMAGES , $model->width, $model->height)) {
                     $model_bg_img = new BackgroundImages();
-                    $image_name = md5($image->name . date("Y-m-d H:i:s")) . '.jpg';
-                    $model_bg_img->image = $image_name;
+                    $model_bg_img->image = $fileName;
                     $model_bg_img->background_id = $model->id;
-
-                    if ($model_bg_img->validate() && $model_bg_img->save()) {
-                        //If all went OK, then I proceed to save the image in filesystem
-                        if (!empty($image)) {
-                            $image->saveAs('uploads/background-image/' . $image_name);
-                        }
+                    if ($model_bg_img->validate()) {
+                        $model_bg_img->save();
                     }
                 }
-                Yii::$app->session->setFlash('success', "success");
-            } else {
-                Yii::$app->session->setFlash('error', "error");
-
             }
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -126,29 +117,23 @@ class BackgroundsController extends Controller
         $model_background_images = new BackgroundImages();
         $background_images = BackgroundImages::getBackgroundImagesById($id);
 
-        if ($model->load(Yii::$app->request->post()) &&  $model_background_images->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
 
-            $upload_image = \yii\web\UploadedFile::getInstances($model_background_images, 'image');
+            $background_image = Yii::$app->request->post('BackgroundImages')['image'];
 
-            if (!empty($upload_image)) {
-                foreach ($upload_image as $image) {
-
-                    $model_bg_img = new BackgroundImages();
-                    $image_name = md5($image->name . date("Y-m-d H:i:s")) . '.jpg';
-                    $model_bg_img->image = $image_name;
-                    $model_bg_img->background_id = $model->id;
-
-                    if ($model_bg_img->validate() && $model_bg_img->save()) {
-                        //If all went OK, then I proceed to save the image in filesystem
-                        if (!empty($image)) {
-                            $image->saveAs('uploads/background-image/' . $image_name);
+            if (!empty($background_image)) {
+                foreach ($background_image as $image) {
+                    $image = $this->changeImageSize($image, $model->width, $model->height);
+                    $fileName = md5(microtime()) . '.jpg';
+                    if ($this->base64_to_img($image, $fileName, self::BACKGROUND_IMAGES)) {
+                        $model_bg_img = new BackgroundImages();
+                        $model_bg_img->image = $fileName;
+                        $model_bg_img->background_id = $model->id;
+                        if ($model_bg_img->validate()) {
+                            $model_bg_img->save();
                         }
                     }
                 }
-                Yii::$app->session->setFlash('success', "success");
-            } else {
-                Yii::$app->session->setFlash('error', "error");
-
             }
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -173,9 +158,9 @@ class BackgroundsController extends Controller
 
         $back_id = $model->id;
         $background_images = BackgroundImages::getBackgroundImagesById($back_id);
-        if ($model->delete()){
-            foreach ($background_images as $background_image){
-                unlink($_SERVER['DOCUMENT_ROOT'] . '/web/uploads/background-image/' . $background_image->image);
+        if ($model->delete()) {
+            foreach ($background_images as $background_image) {
+                unlink($_SERVER['DOCUMENT_ROOT'] . self::BACKGROUND_IMAGES . $background_image->image);
             };
         }
         return $this->redirect(['index']);
@@ -197,6 +182,7 @@ class BackgroundsController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
     /**
      * Get Backgrounds model.
      * If it is successful, return Data.
@@ -204,21 +190,21 @@ class BackgroundsController extends Controller
      */
     public function actionGetBackgroundsAjax()
     {
-        if (Yii::$app->request->isAjax){
-          $ides = Yii::$app->request->get('backgroundIdes');
-          if (!empty($ides)){
-              $model = new BackgroundImages();
-              $data = $model->getBacBackgroundImages($ides);
-              $back_image_directory = '/uploads/background-image/';
-              foreach ($data as $key => $background){
-                  $data[$key]['image'] = $this->getImageBase64($back_image_directory.$background['image']);
-              }
-              if (!empty($data)){
-                  \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-                  return $data;
-              }
-           return false;
-          }
+        if (Yii::$app->request->isAjax) {
+            $ides = Yii::$app->request->get('backgroundIdes');
+            if (!empty($ides)) {
+                $model = new BackgroundImages();
+                $data = $model->getBacBackgroundImages($ides);
+                $back_image_directory = self::BACKGROUND_IMAGES_DIRECTORY;
+                foreach ($data as $key => $background) {
+                    $data[$key]['image'] = $this->getImageBase64($back_image_directory . $background['image']);
+                }
+                if (!empty($data)) {
+                    \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                    return $data;
+                }
+                return false;
+            }
         }
     }
 
@@ -229,14 +215,14 @@ class BackgroundsController extends Controller
      */
     public function actionDeleteBackgroundImageAjax()
     {
-        if (Yii::$app->request->isAjax){
+        if (Yii::$app->request->isAjax) {
             $id = Yii::$app->request->get('id');
-            if (!empty($id)){
+            if (!empty($id)) {
                 $model = BackgroundImages::findOne($id);
 
                 $image_name = $model->image;
-                if ($model->delete()){
-                    unlink( $_SERVER['DOCUMENT_ROOT'] . '/web/uploads/background-image/' . $image_name);
+                if ($model->delete()) {
+                    unlink($_SERVER['DOCUMENT_ROOT'] . self::BACKGROUND_IMAGES . $image_name);
                     return true;
                 }
                 return false;
@@ -244,12 +230,7 @@ class BackgroundsController extends Controller
         }
     }
 
-    private function getImageBase64($image)
-    {
-        $path = $image;
-        $type = pathinfo($path, PATHINFO_EXTENSION);
-        $data = file_get_contents(Yii::$app->urlManager->hostInfo.$path);
-        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-        return $base64;
-    }
+
+
+
 }

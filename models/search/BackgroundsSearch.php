@@ -19,7 +19,7 @@ class BackgroundsSearch extends Backgrounds
     {
         return [
             [['id'], 'integer'],
-            [['title', 'created_at'], 'safe'],
+            [['title','width','height','created_at'], 'safe'],
         ];
     }
 

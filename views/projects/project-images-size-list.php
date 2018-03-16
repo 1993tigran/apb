@@ -12,13 +12,13 @@ $this->title = 'Project Images Size List';
 <?php ?>
 <h1><?= \yii\helpers\Html::encode($this->title) ?></h1>
 <div id="project-images-list">
-    <ul class="list-group col-md-6">
-        <?php foreach ($model_images_size as $model_images_size):?>
-        <li class="list-group-item">
-            <a href="/project-images-list/<?=$project_id.'/'.$model_images_size->imagesSize->id;?>">
-            <?=$model_images_size->imagesSize->width.' x '.$model_images_size->imagesSize->height;?>
+    <ul class="list-group col-md-12">
+        <?php foreach ($images_sizes as $images_size): ?>
+            <a href="/project-images-list/<?= $project_id . '/' . $images_size->background_id; ?>">
+                <li a class="list-group-item">
+                    <?= $images_size->background->width . ' x ' . $images_size->background->height; ?>
+                </li>
             </a>
-        </li>
         <?php endforeach; ?>
     </ul>
 </div>

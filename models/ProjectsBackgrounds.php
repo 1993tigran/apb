@@ -83,4 +83,30 @@ class ProjectsBackgrounds extends \yii\db\ActiveRecord
     {
         return self::find()->where(['project_id' => $id])->with('projectsBackgrounds')->all();
     }
+
+    public static function getProjectsBackgroundSize($id)
+    {
+        return self::find()->where(['project_id' => $id])->with('background')->all();
+    }
+
+    public static function getProjectsBackgroundMaxSize($id)
+    {
+        $query = (new Query())
+            ->select(['pb.project_id','b.*'])
+            ->from(self::tableName().' pb')
+            ->where(['pb.project_id' => $id])
+            ->leftJoin(Backgrounds::tableName().' b', 'b.id = pb.background_id')
+            ->orderBy(['b.width' => SORT_DESC])
+            ->one();
+        return $query;
+    }
+
+    public static function getBackgroundsWithImages($project_id)
+    {
+        return self::find()
+            ->where(['project_id' => $project_id])
+            ->with('background')
+            ->with('projectsBackgrounds')
+            ->all();
+    }
 }
