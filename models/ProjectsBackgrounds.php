@@ -69,38 +69,61 @@ class ProjectsBackgrounds extends \yii\db\ActiveRecord
         return $this->hasOne(Projects::className(), ['id' => 'project_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getProjectsBackgrounds()
     {
         return $this->hasMany(BackgroundImages::className(), ['background_id' => 'background_id']);
     }
 
+    /**
+     * @param $project_id
+     * @return array|\yii\db\ActiveRecord[]
+     */
     public static function getProjectsBackgroundsByProjectId($project_id)
     {
         return self::find()->where(['project_id' => $project_id])->all();
     }
 
+    /**
+     * @param $id
+     * @return array|\yii\db\ActiveRecord[]
+     */
     public static function getProjectsWithBackgrounds($id)
     {
         return self::find()->where(['project_id' => $id])->with('projectsBackgrounds')->all();
     }
 
+    /**
+     * @param $id
+     * @return array|\yii\db\ActiveRecord[]
+     */
     public static function getProjectsBackgroundSize($id)
     {
         return self::find()->where(['project_id' => $id])->with('background')->all();
     }
 
+    /**
+     * @param $id
+     * @return array|bool
+     */
     public static function getProjectsBackgroundMaxSize($id)
     {
         $query = (new Query())
-            ->select(['pb.project_id','b.*'])
-            ->from(self::tableName().' pb')
+            ->select(['pb.project_id', 'b.*'])
+            ->from(self::tableName() . ' pb')
             ->where(['pb.project_id' => $id])
-            ->leftJoin(Backgrounds::tableName().' b', 'b.id = pb.background_id')
+            ->leftJoin(Backgrounds::tableName() . ' b', 'b.id = pb.background_id')
             ->orderBy(['b.width' => SORT_DESC])
             ->one();
         return $query;
     }
 
+    /**
+     * @param $project_id
+     * @return array|\yii\db\ActiveRecord[]
+     */
     public static function getBackgroundsWithImages($project_id)
     {
         return self::find()
@@ -108,5 +131,17 @@ class ProjectsBackgrounds extends \yii\db\ActiveRecord
             ->with('background')
             ->with('projectsBackgrounds')
             ->all();
+    }
+
+    /**
+     * @param $project_id
+     * @param $background_id
+     */
+    public static function createProjectBackground($project_id, $background_id)
+    {
+        $model = new ProjectsBackgrounds();
+        $model->project_id = $project_id;
+        $model->background_id = $background_id;
+        $model->save();
     }
 }

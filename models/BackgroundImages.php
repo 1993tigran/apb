@@ -60,6 +60,10 @@ class BackgroundImages extends \yii\db\ActiveRecord
         return $this->hasOne(Backgrounds::className(), ['id' => 'background_id']);
     }
 
+    /**
+     * @param $ides
+     * @return array
+     */
     public function getBacBackgroundImages($ides)
     {
         $query = (new Query())
@@ -73,6 +77,10 @@ class BackgroundImages extends \yii\db\ActiveRecord
         return $data;
     }
 
+    /**
+     * @param $id
+     * @return array|\yii\db\ActiveRecord[]
+     */
     public static function getBackgroundImagesById($id)
     {
        return self::find()->where(['background_id' => $id])->all();

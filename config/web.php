@@ -72,7 +72,6 @@ $config = [
             'showScriptName' => false,
             'enablePrettyUrl' => true,
             'rules' => [
-                'test' => '/projects/test',
                 '/' => '/home',
                 'logout' => '/site/logout',
                 'projects' => '/projects/index',

@@ -27,7 +27,6 @@ function getRoundedCanvas(sourceCanvas) {
 }
 
 function readURL(input) {
-    console.log('input', input);
     if (input.files && input.files[0]) {
         var reader = new FileReader();
 
@@ -51,11 +50,7 @@ function readURL(input) {
             var height = height;
         }
 
-        console.log('width', width)
-        console.log('height', height)
-
         reader.onload = function (e) {
-            console.log('e', e)
             $('#' + id + '-content').html('<img id="' + id + '"  class="img-thumbnail" src="' + e.target.result + '" alt="Picture">');
             $('#' + id + '-crop').css('display', 'block');
             croppable = false;
@@ -124,9 +119,7 @@ function toDataURL(url, callback) {
 
 function cropBack(data) {
 
-
     var id = $(data).data('id');
-    console.log('id', id)
     var croppedCanvas;
     var roundedCanvas;
 
@@ -137,7 +130,6 @@ function cropBack(data) {
     // Crop
     croppedCanvas = $('#' + id + '').cropper('getCroppedCanvas');
 
-    console.log('croppedCanvas', croppedCanvas)
     // Round
     roundedCanvas = getRoundedCanvas(croppedCanvas);
 

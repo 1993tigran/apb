@@ -69,6 +69,11 @@ class ProjectsImages extends \yii\db\ActiveRecord
         return $this->hasOne(ImagesSize::className(), ['id' => 'images_size_id']);
     }
 
+    /**
+     * @param $project_id
+     * @param $size_id
+     * @return $this
+     */
     public static function getProjectsImagesByIdes($project_id, $size_id)
     {
         return self::find()->where(['project_id' => $project_id])->andWhere(['images_size_id' => $size_id]);

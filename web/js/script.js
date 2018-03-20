@@ -36,21 +36,21 @@ $(document).ready(function () {
 
     $(".generate-btn").attr('disabled','disabled');
     $(".preview").on('click', function () {
-        $("#container").html(' ');
-        $("#container").css('background', 'transparent');
-        $("#container").addClass('loader');
         $("#form-project input,textarea,select").blur();
         setTimeout(function () {
             if ($("#form-project").find('.has-error').length <= 0 ){
                 var backgroundIdes = $("#select-back").val();
                 if (backgroundIdes) {
+                    $("#container").html(' ');
+                    $("#container").css('background', 'transparent');
+                    $("#container").addClass('loader');
                     getBackgrounds(backgroundIdes);
                 }
             }
         },1000);
     });
 
-    $("#form-project input,textarea,select").blur(function () {
+    $("#form-project input,textarea,select").change(function () {
         if ($("#form-project").find('.has-error').length <= 0 ){
             $(".generate-btn").attr('disabled','disabled');
         }

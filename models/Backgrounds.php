@@ -69,6 +69,10 @@ class Backgrounds extends \yii\db\ActiveRecord
         return $this->hasMany(ProjectsBackgrounds::className(), ['background_id' => 'id']);
     }
 
+    /**
+     * @param $id
+     * @return array|null|\yii\db\ActiveRecord
+     */
     public static function getBackgroundWithImages($id){
        return self::find()->where(['id' => $id])->with('backgroundImages')->one();
     }

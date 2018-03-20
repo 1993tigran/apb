@@ -186,7 +186,7 @@ class BackgroundsController extends CommonController
     /**
      * Get Backgrounds model.
      * If it is successful, return Data.
-     * @return mixed
+     *  @return array|bool
      */
     public function actionGetBackgroundsAjax()
     {
@@ -211,7 +211,7 @@ class BackgroundsController extends CommonController
     /**
      * Get Backgrounds image model.
      * If it is successful, return Data.
-     * @return mixed
+     * @return bool
      */
     public function actionDeleteBackgroundImageAjax()
     {

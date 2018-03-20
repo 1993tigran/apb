@@ -51,7 +51,7 @@ class ProjectsController extends CommonController
     public function actionIndex()
     {
         $searchModel = new ProjectsSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,$queue = 1);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $queue = 1);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -90,61 +90,34 @@ class ProjectsController extends CommonController
             $post_projects = Yii::$app->request->post('Projects');
             $background_ides = Yii::$app->request->post('Projects')['background_ides'];
 
-            if (!empty($post_projects['front_img']) &&
-                !empty($post_projects['back_img']) &&
-                !empty($post_projects['top_img']) &&
-                !empty($post_projects['bottom_img']) &&
-                !empty($post_projects['left_img']) &&
-                !empty($post_projects['right_img']) &&
-                !empty(count($background_ides))
-            ) {
+            $images = $this->setImagesData($post_projects, $type = 2);
 
-                $images = [
-                    'front_img' => $post_projects['front_img'],
-                    'back_img' => $post_projects['back_img'],
-                    'top_img' => $post_projects['top_img'],
-                    'bottom_img' => $post_projects['bottom_img'],
-                    'left_img' => $post_projects['left_img'],
-                    'right_img' => $post_projects['right_img'],
-                ];
-
-                $image_names = [];
-                foreach ($images as $key => $image) {
-                    $fileName = md5(microtime()) . '.png';
-                    $fileName = $this->base64_to_img($image, $fileName, self::PROJECT_IMAGES);
-                    $image_names[$key] = $fileName;
+            $image_names = [];
+            foreach ($images as $key => $image) {
+                $fileName = md5(microtime()) . '.png';
+                $fileName = $this->base64_to_img($image, $fileName, self::PROJECT_IMAGES);
+                $image_names[$key] = $fileName;
+                $model->$key = $fileName;
+            }
+            if (isset($generate)) {
+                $model->queue = 1;
+            }
+            if (isset($queue)) {
+                $model->queue = 0;
+            }
+            if ($model->save()) {
+                foreach ($background_ides as $background_id) {
+                    ProjectsBackgrounds::createProjectBackground($model->id,$background_id);
                 }
-
-                $model->front_img = $image_names['front_img'];
-                $model->back_img = $image_names['back_img'];
-                $model->top_img = $image_names['top_img'];
-                $model->bottom_img = $image_names['bottom_img'];
-                $model->left_img = $image_names['left_img'];
-                $model->right_img = $image_names['right_img'];
-                if(isset($generate)){
-                    $model->queue = 1;
+                if (isset($generate)) {
+                    return $this->redirect('/project-image-generate/' . $model->id);
                 }
-                if(isset($queue)){
-                    $model->queue = 0;
+                if (isset($queue)) {
+                    return $this->redirect('/queue-list');
                 }
-
-                if ($model->save()) {
-                    foreach ($background_ides as $background_id) {
-                        $model_project_back = new ProjectsBackgrounds();
-                        $model_project_back->project_id = $model->id;
-                        $model_project_back->background_id = $background_id;
-                        $model_project_back->save();
-                    }
-                    if(isset($generate)){
-                        return $this->redirect('/project-image-generate/' . $model->id);
-                    }
-                    if(isset($queue)){
-                        return $this->redirect('/queue-list');
-                    }
-                } else {
-                    foreach ($image_names as $image_name) {
-                        unlink($_SERVER['DOCUMENT_ROOT'] . self::PROJECT_IMAGES . $image_name);
-                    }
+            } else {
+                foreach ($image_names as $image_name) {
+                    unlink($_SERVER['DOCUMENT_ROOT'] . self::PROJECT_IMAGES . $image_name);
                 }
             }
 
@@ -170,90 +143,55 @@ class ProjectsController extends CommonController
 
         $selected_project_back = ArrayHelper::map(ProjectsBackgrounds::getProjectsBackgroundsByProjectId($model->id), 'background_id', 'background_id');
 
-        $select_images = [
-            'front_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $model->front_img),
-            'back_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $model->back_img),
-            'top_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $model->top_img),
-            'bottom_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $model->bottom_img),
-            'left_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $model->left_img),
-            'right_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $model->right_img),
-        ];
+        $select_images = $this->setImagesData($model, $type = 1);
+
         if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
 
             $generate = Yii::$app->request->post('generate');
             $queue = Yii::$app->request->post('queue');
             $post_projects = Yii::$app->request->post('Projects');
             $background_ides = Yii::$app->request->post('Projects')['background_ides'];
-            if (!empty($post_projects['front_img']) &&
-                !empty($post_projects['back_img']) &&
-                !empty($post_projects['top_img']) &&
-                !empty($post_projects['bottom_img']) &&
-                !empty($post_projects['left_img']) &&
-                !empty($post_projects['right_img']) &&
-                !empty(count($background_ides))
-            ) {
-                $create_image_path = self::PROJECT_GENERATE_IMAGES . $model->id;
-                ProjectsImages::deleteAll(['project_id' => $model->id]);
-                $this->deleteDirectory($_SERVER['DOCUMENT_ROOT'] . $create_image_path);
-                $images = [
-                    'front_img' => $post_projects['front_img'],
-                    'back_img' => $post_projects['back_img'],
-                    'top_img' => $post_projects['top_img'],
-                    'bottom_img' => $post_projects['bottom_img'],
-                    'left_img' => $post_projects['left_img'],
-                    'right_img' => $post_projects['right_img'],
-                ];
-                $project_model = $this->findModel($id);
-                $old_images = [
-                    'front_img' => $project_model->front_img,
-                    'back_img' => $project_model->back_img,
-                    'top_img' => $project_model->top_img,
-                    'bottom_img' => $project_model->bottom_img,
-                    'left_img' => $project_model->left_img,
-                    'right_img' => $project_model->right_img,
-                ];
 
-                $image_names = [];
-                foreach ($old_images as $old_image) {
-                    @unlink($_SERVER['DOCUMENT_ROOT'] . self::PROJECT_IMAGES . $old_image);
-                }
-                foreach ($images as $key => $image) {
-                    $fileName = md5(microtime()) . '.png';
-                    $fileName = $this->base64_to_img($image, $fileName, self::PROJECT_IMAGES);
-                    $image_names[$key] = $fileName;
-                }
+            $create_image_path = self::PROJECT_GENERATE_IMAGES . $model->id;
+            ProjectsImages::deleteAll(['project_id' => $model->id]);
+            $this->deleteDirectory($_SERVER['DOCUMENT_ROOT'] . $create_image_path);
 
-                $model->front_img = $image_names['front_img'];
-                $model->back_img = $image_names['back_img'];
-                $model->top_img = $image_names['top_img'];
-                $model->bottom_img = $image_names['bottom_img'];
-                $model->left_img = $image_names['left_img'];
-                $model->right_img = $image_names['right_img'];
-                if(isset($generate)){
-                    $model->queue = 1;
-                }
-                if(isset($queue)){
-                    $model->queue = 0;
-                }
-                if ($model->save()) {
+            $images = $this->setImagesData($post_projects, $type = 2);
 
-                    if (ProjectsBackgrounds::deleteAll(['project_id' => $model->id])) {
-                        foreach ($background_ides as $background_id) {
-                            $model_project_back = new ProjectsBackgrounds();
-                            $model_project_back->project_id = $model->id;
-                            $model_project_back->background_id = $background_id;
-                            $model_project_back->save();
-                        }
+            $project_model = $this->findModel($id);
+            $old_images = $this->setImagesData($project_model, $type = 3);
+
+            $image_names = [];
+            foreach ($old_images as $old_image) {
+                @unlink($_SERVER['DOCUMENT_ROOT'] . self::PROJECT_IMAGES . $old_image);
+            }
+            foreach ($images as $key => $image) {
+                $fileName = md5(microtime()) . '.png';
+                $fileName = $this->base64_to_img($image, $fileName, self::PROJECT_IMAGES);
+                $image_names[$key] = $fileName;
+                $model->$key = $fileName;
+            }
+            if (isset($generate)) {
+                $model->queue = 1;
+            }
+            if (isset($queue)) {
+                $model->queue = 0;
+            }
+            if ($model->save()) {
+
+                if (ProjectsBackgrounds::deleteAll(['project_id' => $model->id])) {
+                    foreach ($background_ides as $background_id) {
+                        ProjectsBackgrounds::createProjectBackground($model->id,$background_id);
                     }
-
-                    if(isset($generate)){
-                        return $this->redirect('/project-image-generate/' . $model->id);
-                    }
-                    if(isset($queue)){
-                        return $this->redirect('/queue-list');
-                    }
-
                 }
+
+                if (isset($generate)) {
+                    return $this->redirect('/project-image-generate/' . $model->id);
+                }
+                if (isset($queue)) {
+                    return $this->redirect('/queue-list');
+                }
+
             }
 
         }
@@ -286,14 +224,7 @@ class ProjectsController extends CommonController
 
         $selected_project_back = ArrayHelper::map(ProjectsBackgrounds::getProjectsBackgroundsByProjectId($model->id), 'background_id', 'background_id');
 
-        $select_images = [
-            'front_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $model->front_img),
-            'back_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $model->back_img),
-            'top_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $model->top_img),
-            'bottom_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $model->bottom_img),
-            'left_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $model->left_img),
-            'right_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $model->right_img),
-        ];
+        $select_images = $this->setImagesData($model, $type = 1);
 
         if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
 
@@ -302,71 +233,39 @@ class ProjectsController extends CommonController
             $post_projects = Yii::$app->request->post('Projects');
             $background_ides = Yii::$app->request->post('Projects')['background_ides'];
 
-            if (!empty($post_projects['front_img']) &&
-                !empty($post_projects['back_img']) &&
-                !empty($post_projects['top_img']) &&
-                !empty($post_projects['bottom_img']) &&
-                !empty($post_projects['left_img']) &&
-                !empty($post_projects['right_img']) &&
-                !empty(count($background_ides))
-            ) {
+            $images = $this->setImagesData($post_projects, $type = 2);
 
-                $images = [
-                    'front_img' => $post_projects['front_img'],
-                    'back_img' => $post_projects['back_img'],
-                    'top_img' => $post_projects['top_img'],
-                    'bottom_img' => $post_projects['bottom_img'],
-                    'left_img' => $post_projects['left_img'],
-                    'right_img' => $post_projects['right_img'],
-                ];
-                $project_model = $this->findModel($id);
-                $old_images = [
-                    'front_img' => $project_model->front_img,
-                    'back_img' => $project_model->back_img,
-                    'top_img' => $project_model->top_img,
-                    'bottom_img' => $project_model->bottom_img,
-                    'left_img' => $project_model->left_img,
-                    'right_img' => $project_model->right_img,
-                ];
+            $project_model = $this->findModel($id);
+            $old_images = $this->setImagesData($project_model, $type = 3);
 
-                $image_names = [];
-                foreach ($old_images as $old_image) {
-                    unlink($_SERVER['DOCUMENT_ROOT'] . self::PROJECT_IMAGES . $old_image);
-                }
-                foreach ($images as $key => $image) {
-                    $fileName = md5(microtime()) . '.png';
-                    $fileName = $this->base64_to_img($image, $fileName, self::PROJECT_IMAGES);
-                    $image_names[$key] = $fileName;
-                }
+            $image_names = [];
+            foreach ($old_images as $old_image) {
+                unlink($_SERVER['DOCUMENT_ROOT'] . self::PROJECT_IMAGES . $old_image);
+            }
+            foreach ($images as $key => $image) {
+                $fileName = md5(microtime()) . '.png';
+                $fileName = $this->base64_to_img($image, $fileName, self::PROJECT_IMAGES);
+                $image_names[$key] = $fileName;
+                $model->$key = $fileName;
+            }
+            if (isset($generate)) {
+                $model->queue = 1;
+            }
+            if (isset($queue)) {
+                $model->queue = 0;
+            }
+            if ($model->save()) {
 
-                $model->front_img = $image_names['front_img'];
-                $model->back_img = $image_names['back_img'];
-                $model->top_img = $image_names['top_img'];
-                $model->bottom_img = $image_names['bottom_img'];
-                $model->left_img = $image_names['left_img'];
-                $model->right_img = $image_names['right_img'];
-                if(isset($generate)){
-                    $model->queue = 1;
-                }
-                if(isset($queue)){
-                    $model->queue = 0;
-                }
-                if ($model->save()) {
-
-                    if (ProjectsBackgrounds::deleteAll(['project_id' => $model->id])) {
-                        foreach ($background_ides as $background_id) {
-                            $model_project_back = new ProjectsBackgrounds();
-                            $model_project_back->project_id = $model->id;
-                            $model_project_back->background_id = $background_id;
-                            $model_project_back->save();
-                        }
+                if (ProjectsBackgrounds::deleteAll(['project_id' => $model->id])) {
+                    foreach ($background_ides as $background_id) {
+                        ProjectsBackgrounds::createProjectBackground($model->id,$background_id);
                     }
-                    if(isset($generate)){
-                        return $this->redirect('/project-image-generate/' . $model->id);
-                    }
-                    if(isset($queue)){
-                        return $this->redirect('/queue-list');
-                    }
+                }
+                if (isset($generate)) {
+                    return $this->redirect('/project-image-generate/' . $model->id);
+                }
+                if (isset($queue)) {
+                    return $this->redirect('/queue-list');
                 }
             }
 
@@ -391,14 +290,8 @@ class ProjectsController extends CommonController
         $model = $this->findModel($id);
         $project_id = $model->id;
         if (!empty($model)) {
-            $images = [
-                'front_img' => $model->front_img,
-                'back_img' => $model->back_img,
-                'top_img' => $model->top_img,
-                'bottom_img' => $model->bottom_img,
-                'left_img' => $model->left_img,
-                'right_img' => $model->right_img,
-            ];
+            $images = $this->setImagesData($model, $type = 3);
+
             if ($model->delete()) {
                 $create_image_path = self::PROJECT_GENERATE_IMAGES . $project_id;
                 $this->deleteDirectory($_SERVER['DOCUMENT_ROOT'] . $create_image_path);
@@ -426,6 +319,9 @@ class ProjectsController extends CommonController
         ]);
     }
 
+    /**
+     * @return bool|false|int|string
+     */
     public function actionProjectImagesList()
     {
         $project_id = Yii::$app->request->get('project_id');
@@ -467,7 +363,7 @@ class ProjectsController extends CommonController
     public function actionQueueList()
     {
         $searchModel = new ProjectsSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,$queue = 0);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $queue = 0);
 
         return $this->render('queue-list', [
             'searchModel' => $searchModel,
@@ -510,8 +406,7 @@ class ProjectsController extends CommonController
 
     /**
      * Project Image Generate
-     * param project_id
-     * @return mixed
+     * @return array|string|\yii\web\Response
      */
     public function actionProjectImageGenerate()
     {
@@ -550,8 +445,7 @@ class ProjectsController extends CommonController
 
     /**
      * Generate All Queue Projects Image
-     * param project_id
-     * @return mixed
+     * @return array|string|\yii\web\Response
      */
     public function actionGenerateQueueProjects()
     {
@@ -598,11 +492,9 @@ class ProjectsController extends CommonController
         return $this->redirect('/queue-list');
     }
 
-
     /**
      * Ajax call Save Images
-     * param imgData, projectId
-     * @return boolean
+     * @return bool
      */
     public function actionSaveImagesAjax()
     {
@@ -662,24 +554,17 @@ class ProjectsController extends CommonController
         }
     }
 
-//    public function actionGetdata()
-//    {
-//        $background_categories = ArrayHelper::map(Backgrounds::find()->all(), 'id', 'title');
-//        return $background_categories;
-//    }
-
-
     /**
      * Create and download folder
-     * param $project_id
-     * return redirect
+     * @param $id
+     * @return \yii\web\Response
      */
     public function actionZipping($id)
     {
         if (!empty($id)) {
 
             // Get real path for our folder
-            $rootPath = $_SERVER['DOCUMENT_ROOT'] . self::PROJECT_GENERATE_IMAGES.$id;
+            $rootPath = $_SERVER['DOCUMENT_ROOT'] . self::PROJECT_GENERATE_IMAGES . $id;
 
 
             $archive_file_name = $_SERVER['DOCUMENT_ROOT'] . '/web/zip/images.zip';
@@ -721,9 +606,46 @@ class ProjectsController extends CommonController
         }
     }
 
-
-    public function actionTest()
+    /**
+     * Set Images Data
+     * @param $data
+     * @param $type
+     * @return array
+     */
+    private function setImagesData($data, $type)
     {
 
+        if ($type == 1) {
+            $image_data = [
+                'front_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $data->front_img),
+                'back_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $data->back_img),
+                'top_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $data->top_img),
+                'bottom_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $data->bottom_img),
+                'left_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $data->left_img),
+                'right_img' => $this->getImageBase64(self::PROJECT_IMAGES_DIRECTORY . $data->right_img),
+            ];
+        }
+        if ($type == 2) {
+            $image_data = [
+                'front_img' => $data['front_img'],
+                'back_img' => $data['back_img'],
+                'top_img' => $data['top_img'],
+                'bottom_img' => $data['bottom_img'],
+                'left_img' => $data['left_img'],
+                'right_img' => $data['right_img'],
+            ];
+        }
+        if ($type == 3) {
+            $image_data = [
+                'front_img' => $data->front_img,
+                'back_img' => $data->back_img,
+                'top_img' => $data->top_img,
+                'bottom_img' => $data->bottom_img,
+                'left_img' => $data->left_img,
+                'right_img' => $data->right_img,
+            ];
+        }
+        return $image_data;
     }
+
 }

@@ -17,8 +17,12 @@ class CommonController extends Controller
 
     /**
      * Resizes the image with new width height.
-     * param $filename, $newwidth, $newheight
-     * return Base64 image code
+     * @param $image
+     * @param $fileName
+     * @param $save_path
+     * @param $newwidth
+     * @param $newheight
+     * @return bool
      */
     protected function changeImageSize($image, $fileName, $save_path, $newwidth, $newheight)
     {
@@ -47,11 +51,12 @@ class CommonController extends Controller
 
     }
 
-
     /**
      * Base64 code To Image file.
-     * param $filename, $newwidth, $newheight
-     * return image name
+     * @param $image
+     * @param $fileName
+     * @param $save_path
+     * @return mixed
      */
     protected function base64_to_img($image, $fileName, $save_path)
     {
@@ -75,8 +80,8 @@ class CommonController extends Controller
 
     /**
      * Image file To Base64 code.
-     * param $filename, $newwidth, $newheight
-     * return Base64 image code
+     * @param $image
+     * @return string
      */
     protected function getImageBase64($image)
     {
@@ -91,7 +96,7 @@ class CommonController extends Controller
     /**
      * Delete the Directory
      * @param $dir
-     * @return boolean
+     * @return bool
      */
     protected function deleteDirectory($dir)
     {
@@ -113,10 +118,14 @@ class CommonController extends Controller
         return rmdir($dir);
     }
 
+
     /**
      * Compare 2 images, join and save
-     * @param $fileName , $save_path, $background_image_path, $project_image_path
-     * @return boolean
+     * @param $fileName
+     * @param $save_path
+     * @param $background_image_path
+     * @param $project_image_path
+     * @return bool
      */
     protected function compareSave($fileName, $save_path, $background_image_path, $project_image_path)
     {
